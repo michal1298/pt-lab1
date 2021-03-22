@@ -9,11 +9,77 @@ namespace PTLab1
 {
     // rozszerzyć System.IO.FileSystemInfo o zwrócenie napisu reprezentującego
     // atrybuty dostępowe danego pliku/katalogu w postaci sformatowanej:
-    public static class ExtensionFileSytemInfo
+    public static class ExtensionFileSystemInfo
     {
-        public static void PrintAttributes(this FileSystemInfo path)
+        public static string FileName(this FileInfo file)
         {
-            Console.WriteLine("PrintAttributes function");
+            string myFileName = file.Name;
+            return myFileName;
+        }
+        
+        public static long SizeFile(this FileInfo file)
+        {
+            long mySizeFile = file.Length;
+            return mySizeFile;
+        }
+
+        public static DateTime FileDate(this FileInfo file)
+        {
+            var myFileDate = file.CreationTime;
+            myFileDate = file.LastWriteTime;
+            return myFileDate;
+        }
+
+        public static string PropertiesFileRead(this FileInfo file)    // właściwości pliku
+        {
+            bool read = file.Attributes.HasFlag(FileAttributes.ReadOnly);
+            if (read == true)
+            {
+                return "read ";
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        public static string PropertiesFileHidden(this FileInfo file)
+        {
+            bool hidden = file.Attributes.HasFlag(FileAttributes.Hidden);
+            if (hidden == true)
+            {
+                return "hidden ";
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        public static string PropertiesFileArchive(this FileInfo file)
+        {
+            bool archive = file.Attributes.HasFlag(FileAttributes.Archive);
+            if (archive == true)
+            {
+                return "archive ";
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        public static string PropertiesFileSystem(this FileInfo file)
+        {
+            bool system = file.Attributes.HasFlag(FileAttributes.System);
+            if (system == true)
+            {
+                return "system ";
+            }
+            else
+            {
+                return "";
+            }
         }
     }
 
@@ -21,7 +87,7 @@ namespace PTLab1
     // rozszerzyć System.IO.DirectoryInfo o liczbę elementów w katalogu:
     public static class ExtensionDirectoryInfo
     {
-        public static int NumberOfDirectories(this DirectoryInfo myDirectory)
+        public static int NumberOfDirectories(this DirectoryInfo myDirectory)   // liczba katalogów w podanym folderze
         {
             var numberOfDirectories = myDirectory.GetDirectories().Count();
             //var numberOfFiles = myDirectory.GetFiles().Count();
@@ -29,12 +95,35 @@ namespace PTLab1
             return numberOfDirectories;
         }
         
-        public static int NumberOfFiles(this DirectoryInfo myDirectory)
+        public static int NumberOfFiles(this DirectoryInfo myDirectory)         // liczba plików w podanym katalogu
         {
             var numberOfFiles = myDirectory.GetFiles().Count();
             return numberOfFiles;
-        }   
-        
+        }
+
+        public static DateTime DirectoryDate(this DirectoryInfo myDirectory)
+        {
+            var myDirectoryDate = myDirectory.CreationTime;
+            myDirectoryDate = myDirectory.LastWriteTime;
+            return myDirectoryDate;
+        }
+
+        /*
+        public static int SizeOfFile(this DirectoryInfo myDirecetory, string path)
+        {
+            var sizeofFile = myDirecetory.GetFiles();
+            long size = 0;
+            //long singleFile = 0;
+            
+            
+            foreach (int singleFile in sizeofFile)
+            {
+                size = singleFile.len
+            }
+            return (int)size;
+            
+        }
+        */
     }
 }
 
@@ -46,24 +135,18 @@ namespace PTLab1
         //int count = 0;
         static void TreeStructure(string path, int countBackslashStartPath)
         {
-            //Console.WriteLine("Current path: " + path);
-            //var allFiles = Directory.GetFiles(path);
-            //Console.WriteLine("  number of FILES in given path is {0}.", allFiles.Length);
             Files(path, countBackslashStartPath);
             Catalogs(path, countBackslashStartPath);
         }
 
         static void Files(string path, int countBackslashStartPath)
         {
-            //Console.WriteLine("function Files --------------------");
             var allFiles = Directory.GetFiles(path);
             if (allFiles.Length > 0)
             {
-                //Console.WriteLine("  number of FILES in given path is {0}.", allFiles.Length);
                 var filesInCatalog = Directory.GetFiles(path);
                 int countBackslash = path.Split('\\').Length - 1;
                 int numberOfTabs = countBackslash - countBackslashStartPath;
-                //Console.WriteLine("numberOfTabs = " + numberOfTabs);
 
                 foreach (var fileName in filesInCatalog)
                 {
@@ -75,13 +158,66 @@ namespace PTLab1
                     // Console.WriteLine(fileName); // cała ścieżka
                     //var myDirectoryInfo = new DirectoryInfo(path);
 
-                    Console.WriteLine(Path.GetFileName(fileName) + "  ");
+                    //Console.Write(Path.GetFileName(fileName));
+                    //Console.Write(myFileInfo.Name);
+                    //Console.WriteLine("  |||  size: " + myFileInfo.Length);
+                    
+                    var myFileInfo = new FileInfo(fileName);
+                    Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo) 
+                        + "  |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo)
+                        + " | date: " + ExtensionFileSystemInfo.FileDate(myFileInfo)
+                        + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo)
+                        + ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo)
+                        + ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo)
+                        + ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
+                    /*
+                    Console.Write("  |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo));
+                    Console.Write(" | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo));
+                    Console.Write(ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo));
+                    Console.Write(ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo));
+                    Console.WriteLine(ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
+                    */
+
+                    //Console.WriteLine(Path.GetFileName(fileName) + Path.);
+                    //Console.Write(Path.GetFileName(fileName) + "  |||  size: " 
+                    //    + ExtensionFileSystemInfo.SizeOfElement(myFileInfo));
                     //Console.Write(ExtensionDirectoryInfo.NumberOfDirectoriesFiles(myDirectoryInfo));
-                    //Console.WriteLine();
+
+
+
+                    //var myDirectoryInfo = new DirectoryInfo(path);
+
+                    // TODO to poprawnie wyświetla nazwę:
+                    //Console.WriteLine(Path.GetFileName(fileName));
+
+                    /*
+                    Console.Write(Path.GetFileName(fileName) + "   |||   size: "
+                        + ExtensionDirectoryInfo.SizeOfFile(myDirectoryInfo, path) + '\n');
+                    */
+
+
+                    // TODO rozmiar pliku
+                    /*
+                    var allDirectories = Directory.GetDirectories(path);
+                    foreach (var subdirectory in allDirectories)
+                    {
+                        var myDirectoryInfo = new DirectoryInfo(subdirectory);
+                        var myFiles.
+                    }
+                    */
+                    /*
+                    for (int i = 1; i < fileName.Length; i++)
+                    {
+                        FileInfo myFileInfo = new FileInfo(allFiles[i]);
+                        var sizeofmyfileinfo = myFileInfo.Length;
+                        Console.WriteLine(sizeofmyfileinfo);
+
+                    }
+                    */
                 }
+
             }
         }
-
         static void Catalogs(string path, int countBackslashStartPath)
         {
             //Console.WriteLine("function Catalogs -------------------");
@@ -103,10 +239,10 @@ namespace PTLab1
                     var myDirectoryInfo = new DirectoryInfo(subdirectory);
                     //Console.WriteLine(Path.GetFileName(subdirectory));       // tylko nazwa folderu
 
-                    Console.WriteLine(Path.GetFileName(subdirectory) + "  |||  catalogs: "
-                        + ExtensionDirectoryInfo.NumberOfDirectories(myDirectoryInfo) + "  files: " 
-                        + ExtensionDirectoryInfo.NumberOfFiles(myDirectoryInfo)
-                        );
+                    Console.WriteLine(Path.GetFileName(subdirectory) 
+                        + "  |||  catalogs: " + ExtensionDirectoryInfo.NumberOfDirectories(myDirectoryInfo) 
+                        + "  files: " + ExtensionDirectoryInfo.NumberOfFiles(myDirectoryInfo)
+                        + " | date: " + ExtensionDirectoryInfo.DirectoryDate(myDirectoryInfo));
 
 
                     TreeStructure(subdirectory, countBackslashStartPath);
@@ -119,10 +255,6 @@ namespace PTLab1
         static void Main(string[] args)
         {
             // Solution Explorer -> Right click on project name -> Properties -> Debug -> Application arguments:
-            //for (int i = 0; i < args.Length; i++)
-            //{
-            //    Console.WriteLine($"Arg[{i}] = [{args[i]}]");
-            //}
 
             if (args.Length > 2)
             {
@@ -131,8 +263,6 @@ namespace PTLab1
                 Console.WriteLine("Start path: " + startPath);
                 //Console.WriteLine("Type of path:" + path.GetType());
 
-
-                // todo tutaj dodać obsługę kolejnych parametrów funkcji
                 string typeOfSort = args[1];
                 Console.WriteLine("typeOfSort: " + typeOfSort);
 
