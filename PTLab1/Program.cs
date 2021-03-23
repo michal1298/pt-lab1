@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;    // do Directory.GetFiles
 using System.Linq;  // do Count()
-using System.Collections.Generic;
+using System.Collections.Generic;   // do SortedSet 
 
 
 // metody rozszerzające (extension methods):
@@ -35,7 +35,7 @@ namespace PTLab1
             bool read = file.Attributes.HasFlag(FileAttributes.ReadOnly);
             if (read == true)
             {
-                return "read ";
+                return "r ";
             }
             else
             {
@@ -48,7 +48,7 @@ namespace PTLab1
             bool hidden = file.Attributes.HasFlag(FileAttributes.Hidden);
             if (hidden == true)
             {
-                return "hidden ";
+                return "h ";
             }
             else
             {
@@ -61,7 +61,7 @@ namespace PTLab1
             bool archive = file.Attributes.HasFlag(FileAttributes.Archive);
             if (archive == true)
             {
-                return "archive ";
+                return "a ";
             }
             else
             {
@@ -74,7 +74,7 @@ namespace PTLab1
             bool system = file.Attributes.HasFlag(FileAttributes.System);
             if (system == true)
             {
-                return "system ";
+                return "s ";
             }
             else
             {
@@ -117,7 +117,7 @@ namespace PTLab1
             bool read = myDirectory.Attributes.HasFlag(FileAttributes.ReadOnly);
             if (read == true)
             {
-                return "read ";
+                return "r ";
             }
             else
             {
@@ -130,7 +130,7 @@ namespace PTLab1
             bool hidden = myDirectory.Attributes.HasFlag(FileAttributes.Hidden);
             if (hidden == true)
             {
-                return "hidden ";
+                return "h ";
             }
             else
             {
@@ -143,7 +143,7 @@ namespace PTLab1
             bool archive = myDirectory.Attributes.HasFlag(FileAttributes.Archive);
             if (archive == true)
             {
-                return "archive ";
+                return "a ";
             }
             else
             {
@@ -156,7 +156,7 @@ namespace PTLab1
             bool system = myDirectory.Attributes.HasFlag(FileAttributes.System);
             if (system == true)
             {
-                return "system ";
+                return "s ";
             }
             else
             {
@@ -172,41 +172,125 @@ namespace PTLab1
     class Program
     {
         //int count = 0;
-        static void TreeStructure(string path, int countBackslashStartPath)
+        static void TreeStructure(string path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
         {
-            Files(path, countBackslashStartPath);
-            Catalogs(path, countBackslashStartPath);
+            Files(path, countBackslashStartPath, typeOfSort, orderOfSort);
+            Catalogs(path, countBackslashStartPath, typeOfSort, orderOfSort);
         }
 
-        static void Files(string path, int countBackslashStartPath)
+        static void Files(string path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
         {
+            //Console.WriteLine("type: '{0}'", typeOfSort);
+            //Console.WriteLine("order: '{0}'", orderOfSort);
             var allFiles = Directory.GetFiles(path);
+            //var allfiles2 = new directoryinfo(path);
+            //var sortedfiles2 = new sortedset<fileinfo>(allfiles2.getfiles());
+            //foreach (var i in sortedfiles2)
+            //{
+            //    console.writeline(i.name);
+            //}
+
             if (allFiles.Length > 0)
             {
                 var filesInCatalog = Directory.GetFiles(path);
                 int countBackslash = path.Split('\\').Length - 1;
                 int numberOfTabs = countBackslash - countBackslashStartPath;
 
-                foreach (var fileName in filesInCatalog)
+
+                var sortedFiles = new SortedSet<string>();  // to działa
+                var reversedSorted = sortedFiles.Reverse();
+
+
+                if (typeOfSort == "alphabetical")
                 {
-                    for (int i = 0; i < numberOfTabs; i++)
+                    foreach (var fileName in filesInCatalog)
                     {
-                        Console.Write("\t");
+                        sortedFiles.Add(fileName);                          // działa, gdy var sortedFiles = new SortedSet<string>();
                     }
                     
-                    var myFileInfo = new FileInfo(fileName);
-                    Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo) 
-                        + "    |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo)
-                        + " | date: " + ExtensionFileSystemInfo.FileDate(myFileInfo)
-                        + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo)
-                        + ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo)
-                        + ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo)
-                        + ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
+                    if (orderOfSort == "normal")
+                    {
+                        foreach (string fileInCatalog in sortedFiles)     // wyświetla poprawnie nieposortowane pliki w katalogu
+                        {
+                            for (int i = 0; i < numberOfTabs; i++)
+                            {
+                                Console.Write("\t");
+                            }
+
+                            //Console.WriteLine(files1);
+                            var myFileInfo = new FileInfo(fileInCatalog);
+                            Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo)
+                                + "    |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo)
+                                + " | date: " + ExtensionFileSystemInfo.FileDate(myFileInfo)
+                                + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo)
+                                + ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo)
+                                + ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo)
+                                + ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
+                        }
+                    }
+                    else if (orderOfSort == "reverse")
+                    {
+                        foreach (string fileInCatalog in reversedSorted)     // wyświetla poprawnie nieposortowane pliki w katalogu
+                        {
+                            for (int i = 0; i < numberOfTabs; i++)
+                            {
+                                Console.Write("\t");
+                            }
+
+                            //Console.WriteLine(files1);
+                            var myFileInfo = new FileInfo(fileInCatalog);
+                            Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo)
+                                + "    |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo)
+                                + " | date: " + ExtensionFileSystemInfo.FileDate(myFileInfo)
+                                + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo)
+                                + ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo)
+                                + ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo)
+                                + ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid argument '{0}'", orderOfSort);
+                    }
+                }
+                else if (typeOfSort == "size")
+                {
+                    if (orderOfSort == "normal")
+                    {
+                        Console.WriteLine("typeOfSort = size; orderOfSort = normal");
+                    }
+                    else if (orderOfSort == "reverse")
+                    {
+                        Console.WriteLine("typeOfSort = size; orderOfSort = reverse");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid argument '{0}'", orderOfSort);
+                    }
+                }
+                else if (typeOfSort == "date")
+                {
+                    if (orderOfSort == "normal")
+                    {
+                        Console.WriteLine("typeOfSort = date; orderOfSort = normal");
+                    }
+                    else if (orderOfSort == "reverse")
+                    {
+                        Console.WriteLine("typeOfSort = date; orderOfSort = reverse");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid argument '{0}'", orderOfSort);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid argument '{0}'", typeOfSort);
                 }
             }
         }
 
-        static void Catalogs(string path, int countBackslashStartPath)
+        static void Catalogs(string path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
         {
             var allDirectories = Directory.GetDirectories(path);
             int countBackslash = path.Split('\\').Length - 1;
@@ -233,7 +317,7 @@ namespace PTLab1
                         + ExtensionDirectoryInfo.PropertiesDirectorySystem(myDirectoryInfo));
 
 
-                    TreeStructure(subdirectory, countBackslashStartPath);
+                    TreeStructure(subdirectory, countBackslashStartPath, typeOfSort, orderOfSort);
                 }
             }
         }
@@ -249,14 +333,15 @@ namespace PTLab1
                 Console.WriteLine("Start path: " + startPath);
 
                 string typeOfSort = args[1];    // typ sortowania
-                Console.WriteLine("typeOfSort: " + typeOfSort);
+                Console.WriteLine("typeOfSort: '{0}'", typeOfSort);
 
                 string orderOfSort = args[2];   // kolejność sortowania
-                Console.WriteLine("orderOfSort: " + orderOfSort + '\n');
+                orderOfSort.Trim();
+                Console.WriteLine("orderOfSort: '{0}'", orderOfSort);
 
                 int countBackslashStartPath = startPath.Split('\\').Length - 1;
 
-                TreeStructure(startPath, countBackslashStartPath);
+                TreeStructure(startPath, countBackslashStartPath, typeOfSort, orderOfSort);
             }
             else
             {
@@ -265,3 +350,22 @@ namespace PTLab1
         }
     }
 }
+
+
+
+/*
+// stare wyświetlanie plików, bez sortowania:
+for (int i = 0; i < numberOfTabs; i++)
+{
+    Console.Write("\t");
+}
+
+var myFileInfo = new FileInfo(fileName);
+Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo) 
+    + "    |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo)
+    + " | date: " + ExtensionFileSystemInfo.FileDate(myFileInfo)
+    + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo)
+    + ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo)
+    + ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo)
+    + ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
+*/
