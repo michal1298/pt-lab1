@@ -34,52 +34,36 @@ namespace PTLab1
         {
             bool read = file.Attributes.HasFlag(FileAttributes.ReadOnly);
             if (read == true)
-            {
                 return "r ";
-            }
             else
-            {
                 return "";
-            }
         }
 
         public static string PropertiesFileHidden(this FileInfo file)
         {
             bool hidden = file.Attributes.HasFlag(FileAttributes.Hidden);
             if (hidden == true)
-            {
                 return "h ";
-            }
             else
-            {
                 return "";
-            }
         }
 
         public static string PropertiesFileArchive(this FileInfo file)
         {
             bool archive = file.Attributes.HasFlag(FileAttributes.Archive);
             if (archive == true)
-            {
                 return "a ";
-            }
             else
-            {
                 return "";
-            }
         }
 
         public static string PropertiesFileSystem(this FileInfo file)
         {
             bool system = file.Attributes.HasFlag(FileAttributes.System);
             if (system == true)
-            {
                 return "s ";
-            }
             else
-            {
                 return "";
-            }
         }
     }
 
@@ -116,52 +100,36 @@ namespace PTLab1
         {
             bool read = myDirectory.Attributes.HasFlag(FileAttributes.ReadOnly);
             if (read == true)
-            {
                 return "r ";
-            }
             else
-            {
                 return "";
-            }
         }
 
         public static string PropertiesDirectoryHidden(this DirectoryInfo myDirectory)
         {
             bool hidden = myDirectory.Attributes.HasFlag(FileAttributes.Hidden);
             if (hidden == true)
-            {
                 return "h ";
-            }
             else
-            {
                 return "";
-            }
         }
 
         public static string PropertiesDirectoryArchive(this DirectoryInfo myDirectory)
         {
             bool archive = myDirectory.Attributes.HasFlag(FileAttributes.Archive);
             if (archive == true)
-            {
                 return "a ";
-            }
             else
-            {
                 return "";
-            }
         }
 
         public static string PropertiesDirectorySystem(this DirectoryInfo myDirectory)
         {
             bool system = myDirectory.Attributes.HasFlag(FileAttributes.System);
             if (system == true)
-            {
                 return "s ";
-            }
             else
-            {
                 return "";
-            }
         }
     }
 }
@@ -174,122 +142,122 @@ namespace PTLab1
         //int count = 0;
         static void TreeStructure(string path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
         {
-            Files(path, countBackslashStartPath, typeOfSort, orderOfSort);
-            Catalogs(path, countBackslashStartPath, typeOfSort, orderOfSort);
+            var myDirectories = new DirectoryInfo(path);
+            Files(myDirectories, countBackslashStartPath, typeOfSort, orderOfSort);
+            Catalogs(myDirectories, countBackslashStartPath, typeOfSort, orderOfSort);
+            
+            // stare:
+            //Files(path, countBackslashStartPath, typeOfSort, orderOfSort);
+            //Catalogs(path, countBackslashStartPath, typeOfSort, orderOfSort);
         }
-
-        static void Files(string path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
+        
+        
+        static void Catalogs(DirectoryInfo path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
         {
-            //Console.WriteLine("type: '{0}'", typeOfSort);
-            //Console.WriteLine("order: '{0}'", orderOfSort);
-            var allFiles = Directory.GetFiles(path);
-            //var allfiles2 = new directoryinfo(path);
-            //var sortedfiles2 = new sortedset<fileinfo>(allfiles2.getfiles());
-            //foreach (var i in sortedfiles2)
-            //{
-            //    console.writeline(i.name);
-            //}
-
-            if (allFiles.Length > 0)
+            List<DirectoryInfo> myDirectories = path.GetDirectories().ToList();
+            foreach(var directory in myDirectories)
             {
-                var filesInCatalog = Directory.GetFiles(path);
-                int countBackslash = path.Split('\\').Length - 1;
-                int numberOfTabs = countBackslash - countBackslashStartPath;
+                // wyświetla poprawinie katalogi w głównym folderze:
+                Console.WriteLine(directory.Name);
+            }
+        }
+        
+        static void Files(DirectoryInfo path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
+        {
+            List<FileInfo> myFiles = path.GetFiles().ToList();
+            foreach (var file in myFiles)
+            {
+                // wyświetla poprawinie pliki w głównym folderze:
+                Console.WriteLine(file.Name);
+            }
+            // wywołanie sortowania
+            List<FileInfo> sort = SortFiles(myFiles, typeOfSort, orderOfSort);
+            foreach(var sortedFile in sort)
+            {
+                Console.WriteLine("sorted file: " + sortedFile.Name);
+            }
+        }
+        
 
 
-                var sortedFiles = new SortedSet<string>();  // to działa
-                var reversedSorted = sortedFiles.Reverse();
-
-
-                if (typeOfSort == "alphabetical")
+        static public List<FileInfo> SortFiles(List<FileInfo> myFiles, string typeOfSort, string orderOfSort)
+        {
+            Console.WriteLine("----SortFiles method----");
+            if (typeOfSort == "size")
+            {
+                if (orderOfSort == "normal")
                 {
-                    foreach (var fileName in filesInCatalog)
-                    {
-                        sortedFiles.Add(fileName);                          // działa, gdy var sortedFiles = new SortedSet<string>();
-                    }
-                    
-                    if (orderOfSort == "normal")
-                    {
-                        foreach (string fileInCatalog in sortedFiles)     // wyświetla poprawnie nieposortowane pliki w katalogu
-                        {
-                            for (int i = 0; i < numberOfTabs; i++)
-                            {
-                                Console.Write("\t");
-                            }
-
-                            //Console.WriteLine(files1);
-                            var myFileInfo = new FileInfo(fileInCatalog);
-                            Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo)
-                                + "    |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo)
-                                + " | date: " + ExtensionFileSystemInfo.FileDate(myFileInfo)
-                                + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo)
-                                + ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo)
-                                + ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo)
-                                + ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
-                        }
-                    }
-                    else if (orderOfSort == "reverse")
-                    {
-                        foreach (string fileInCatalog in reversedSorted)     // wyświetla poprawnie nieposortowane pliki w katalogu
-                        {
-                            for (int i = 0; i < numberOfTabs; i++)
-                            {
-                                Console.Write("\t");
-                            }
-
-                            //Console.WriteLine(files1);
-                            var myFileInfo = new FileInfo(fileInCatalog);
-                            Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo)
-                                + "    |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo)
-                                + " | date: " + ExtensionFileSystemInfo.FileDate(myFileInfo)
-                                + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo)
-                                + ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo)
-                                + ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo)
-                                + ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid argument '{0}'", orderOfSort);
-                    }
+                    Console.WriteLine("size-normal");
+                    var sortedFiles = myFiles.OrderBy(file => file.Length).ToList();
+                    return sortedFiles;
                 }
-                else if (typeOfSort == "size")
+                else if (orderOfSort == "reverse")
                 {
-                    if (orderOfSort == "normal")
-                    {
-                        Console.WriteLine("typeOfSort = size; orderOfSort = normal");
-                    }
-                    else if (orderOfSort == "reverse")
-                    {
-                        Console.WriteLine("typeOfSort = size; orderOfSort = reverse");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid argument '{0}'", orderOfSort);
-                    }
-                }
-                else if (typeOfSort == "date")
-                {
-                    if (orderOfSort == "normal")
-                    {
-                        Console.WriteLine("typeOfSort = date; orderOfSort = normal");
-                    }
-                    else if (orderOfSort == "reverse")
-                    {
-                        Console.WriteLine("typeOfSort = date; orderOfSort = reverse");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid argument '{0}'", orderOfSort);
-                    }
+                    Console.WriteLine("size-reverse");
+                    var sortedFiles = myFiles.OrderBy(file => file.Length).Reverse().ToList();
+                    return sortedFiles;
                 }
                 else
                 {
-                    Console.WriteLine("Invalid argument '{0}'", typeOfSort);
+                    Console.WriteLine("else 2 work");
+                    return myFiles;
                 }
+            }
+            else if (typeOfSort == "alphabetical")
+            {
+                if (orderOfSort == "normal")
+                {
+                    Console.WriteLine("alphabetical-normal");
+                    var sortedFiles = myFiles.OrderBy(file => file.Name).ToList();
+                    return sortedFiles;
+                }
+                else if (orderOfSort == "reverse")
+                {
+                    Console.WriteLine("alphabetical-reverse");
+                    var sortedFiles = myFiles.OrderBy(file => file.Name).Reverse().ToList();
+                    return sortedFiles;
+                }
+                else
+                {
+                    Console.WriteLine("else 2 work");
+                    return myFiles;
+                }
+            }
+
+            else if (typeOfSort == "date")
+            {
+                if (orderOfSort == "normal")
+                {
+                    Console.WriteLine("date-normal");
+                    var sortedFiles = myFiles.OrderBy(file => file.LastWriteTime).ToList();
+                    return sortedFiles;
+                }
+                else if (orderOfSort == "reverse")
+                {
+                    Console.WriteLine("date-reverse");
+                    var sortedFiles = myFiles.OrderBy(file => file.LastWriteTime).Reverse().ToList();
+                    return sortedFiles;
+                }
+                else
+                {
+                    Console.WriteLine("else 2 work");
+                    return myFiles;
+                }
+            }
+
+            else
+            {
+                Console.WriteLine("else work");
+                return myFiles;
             }
         }
 
+        private List<DirectoryInfo> SortDirectories(List<DirectoryInfo> myDirectories)
+        {
+            return myDirectories;
+        }
+        
+        
         static void Catalogs(string path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
         {
             var allDirectories = Directory.GetDirectories(path);
@@ -336,7 +304,6 @@ namespace PTLab1
                 Console.WriteLine("typeOfSort: '{0}'", typeOfSort);
 
                 string orderOfSort = args[2];   // kolejność sortowania
-                orderOfSort.Trim();
                 Console.WriteLine("orderOfSort: '{0}'", orderOfSort);
 
                 int countBackslashStartPath = startPath.Split('\\').Length - 1;
@@ -344,9 +311,7 @@ namespace PTLab1
                 TreeStructure(startPath, countBackslashStartPath, typeOfSort, orderOfSort);
             }
             else
-            {
                 Console.WriteLine("Not enough application arguments");
-            }
         }
     }
 }
@@ -368,4 +333,116 @@ Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo)
     + ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo)
     + ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo)
     + ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
+*/
+
+/*
+// stare wyświetlanie posortowanych plików:
+static void Files(string path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
+{
+
+    var allFiles = Directory.GetFiles(path);
+
+    if (allFiles.Length > 0)
+    {
+        string[] filesInCatalog = Directory.GetFiles(path);
+        //var filesInCatalogByDate = ExtensionFileSystemInfo.FileDate(path);
+        int countBackslash = path.Split('\\').Length - 1;
+        int numberOfTabs = countBackslash - countBackslashStartPath;
+
+
+        var sortedFilesByName = new SortedSet<string>();                // to działa
+        var reversedSortedFilesByName = sortedFilesByName.Reverse();    // to działa
+
+        var sortedFilesByDate = new SortedSet<string>();
+        var reversedSortedFilesByDate = sortedFilesByDate.Reverse();
+
+        if (typeOfSort == "alphabetical")
+        {
+            foreach (string fileName in filesInCatalog)
+            {
+                sortedFilesByName.Add(fileName);       // działa, gdy var sortedFiles = new SortedSet<string>();
+            }
+
+            if (orderOfSort == "normal")
+            {
+                foreach (string fileInCatalog in sortedFilesByName)     // wyświetla poprawnie nieposortowane pliki w katalogu
+                {
+                    for (int i = 0; i < numberOfTabs; i++)
+                    {
+                        Console.Write("\t");
+                    }
+
+                    //Console.WriteLine(files1);
+                    var myFileInfo = new FileInfo(fileInCatalog);
+                    Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo)
+                        + "    |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo)
+                        + " | date: " + ExtensionFileSystemInfo.FileDate(myFileInfo)
+                        + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo)
+                        + ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo)
+                        + ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo)
+                        + ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
+                }
+            }
+            else if (orderOfSort == "reverse")
+            {
+                foreach (string fileInCatalog in reversedSortedFilesByName)     // wyświetla poprawnie nieposortowane pliki w katalogu
+                {
+                    for (int i = 0; i < numberOfTabs; i++)
+                    {
+                        Console.Write("\t");
+                    }
+
+                    //Console.WriteLine(files1);
+                    var myFileInfo = new FileInfo(fileInCatalog);
+                    Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo)
+                        + "    |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo)
+                        + " | date: " + ExtensionFileSystemInfo.FileDate(myFileInfo)
+                        + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo)
+                        + ExtensionFileSystemInfo.PropertiesFileHidden(myFileInfo)
+                        + ExtensionFileSystemInfo.PropertiesFileArchive(myFileInfo)
+                        + ExtensionFileSystemInfo.PropertiesFileSystem(myFileInfo));
+                }
+            }
+            else
+                Console.WriteLine("Invalid argument '{0}'", orderOfSort);
+        }
+        else if (typeOfSort == "size")
+        {
+            if (orderOfSort == "normal")
+            {
+                Console.WriteLine("typeOfSort = size; orderOfSort = normal");
+            }
+            else if (orderOfSort == "reverse")
+            {
+                Console.WriteLine("typeOfSort = size; orderOfSort = reverse");
+            }
+            else
+                Console.WriteLine("Invalid argument '{0}'", orderOfSort);
+        }
+        else if (typeOfSort == "date")
+        {
+            if (orderOfSort == "normal")
+            {
+                Console.WriteLine("typeOfSort = date; orderOfSort = normal");
+            }
+            else if (orderOfSort == "reverse")
+            {
+                Console.WriteLine("typeOfSort = date; orderOfSort = reverse");
+            }
+            else
+                Console.WriteLine("Invalid argument '{0}'", orderOfSort);
+        }
+        else
+            Console.WriteLine("Invalid argument '{0}'", typeOfSort);
+    }
+    
+}
+*/
+
+/*
+// stara metoda wywoływania:
+static void Files(string path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
+{
+
+}
 */
