@@ -160,8 +160,22 @@ namespace PTLab1
                 // wyświetla poprawinie katalogi w głównym folderze:
                 Console.WriteLine(directory.Name);
             }
+            // wywołanie sortowania
+            List<DirectoryInfo> sort = SortDirectories(myDirectories, typeOfSort, orderOfSort);
+            foreach(var sortedDictonary in sort)
+            {
+                //Console.WriteLine("sorted catalog: " + sortedDictonary.Name);
+                Console.WriteLine(ExtensionDirectoryInfo.DirectoryName(sortedDictonary)
+                + "    |||  catalogs: " + ExtensionDirectoryInfo.NumberOfDirectories(sortedDictonary)
+                + "  files: " + ExtensionDirectoryInfo.NumberOfFiles(sortedDictonary)
+                + " | date: " + ExtensionDirectoryInfo.DirectoryDate(sortedDictonary)
+                + " | attributes: " + ExtensionDirectoryInfo.PropertiesDirectoryRead(sortedDictonary)
+                + ExtensionDirectoryInfo.PropertiesDirectoryHidden(sortedDictonary)
+                + ExtensionDirectoryInfo.PropertiesDirectoryArchive(sortedDictonary)
+                + ExtensionDirectoryInfo.PropertiesDirectorySystem(sortedDictonary));
+            }
         }
-        
+
         static void Files(DirectoryInfo path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
         {
             List<FileInfo> myFiles = path.GetFiles().ToList();
@@ -174,13 +188,20 @@ namespace PTLab1
             List<FileInfo> sort = SortFiles(myFiles, typeOfSort, orderOfSort);
             foreach(var sortedFile in sort)
             {
-                Console.WriteLine("sorted file: " + sortedFile.Name);
+                //Console.WriteLine("sorted file: " + sortedFile.Name);
+                Console.WriteLine(ExtensionFileSystemInfo.FileName(sortedFile)
+                + "    |||  size: " + ExtensionFileSystemInfo.SizeFile(sortedFile)
+                + " | date: " + ExtensionFileSystemInfo.FileDate(sortedFile)
+                + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(sortedFile)
+                + ExtensionFileSystemInfo.PropertiesFileHidden(sortedFile)
+                + ExtensionFileSystemInfo.PropertiesFileArchive(sortedFile)
+                + ExtensionFileSystemInfo.PropertiesFileSystem(sortedFile));
             }
         }
         
 
 
-        static public List<FileInfo> SortFiles(List<FileInfo> myFiles, string typeOfSort, string orderOfSort)
+        static private List<FileInfo> SortFiles(List<FileInfo> myFiles, string typeOfSort, string orderOfSort)
         {
             Console.WriteLine("----SortFiles method----");
             if (typeOfSort == "size")
@@ -252,12 +273,80 @@ namespace PTLab1
             }
         }
 
-        private List<DirectoryInfo> SortDirectories(List<DirectoryInfo> myDirectories)
+        static private List<DirectoryInfo> SortDirectories(List<DirectoryInfo> myDirectories, string typeOfSort, string orderOfSort)
         {
-            return myDirectories;
+            Console.WriteLine("----SortDirectories method----");
+            if (typeOfSort == "size")
+            {
+                if (orderOfSort == "normal")
+                {
+                    Console.WriteLine("size-normal");
+                    var sortedDirectories = myDirectories.OrderBy(directory => directory.GetFiles().Count()).ToList();
+                    return sortedDirectories;
+                }
+                else if (orderOfSort == "reverse")
+                {
+                    Console.WriteLine("size-reverse");
+                    var sortedDirectories = myDirectories.OrderBy(directory => directory.GetFiles().Count()).Reverse().ToList();
+                    return sortedDirectories;
+                }
+                else
+                {
+                    Console.WriteLine("else 2 work");
+                    return myDirectories;
+                }
+            }
+            else if (typeOfSort == "alphabetical")
+            {
+                if (orderOfSort == "normal")
+                {
+                    Console.WriteLine("alphabetical-normal");
+                    var sortedDirectories = myDirectories.OrderBy(directory => directory.Name).ToList();
+                    return sortedDirectories;
+                }
+                else if (orderOfSort == "reverse")
+                {
+                    Console.WriteLine("alphabetical-reverse");
+                    var sortedDirectories = myDirectories.OrderBy(directory => directory.Name).Reverse().ToList();
+                    return sortedDirectories;
+                }
+                else
+                {
+                    Console.WriteLine("else 2 work");
+                    return myDirectories;
+                }
+            }
+
+            else if (typeOfSort == "date")
+            {
+                if (orderOfSort == "normal")
+                {
+                    Console.WriteLine("date-normal");
+                    var sortedDirectories = myDirectories.OrderBy(directory => directory.LastWriteTime).ToList();
+                    return sortedDirectories;
+                }
+                else if (orderOfSort == "reverse")
+                {
+                    Console.WriteLine("date-reverse");
+                    var sortedDirectories = myDirectories.OrderBy(directory => directory.LastWriteTime).Reverse().ToList();
+                    return sortedDirectories;
+                }
+                else
+                {
+                    Console.WriteLine("else 2 work");
+                    return myDirectories;
+                }
+            }
+
+            else
+            {
+                Console.WriteLine("else work");
+                return myDirectories;
+            }
+
         }
-        
-        
+
+
         static void Catalogs(string path, int countBackslashStartPath, string typeOfSort, string orderOfSort)
         {
             var allDirectories = Directory.GetDirectories(path);

@@ -14,11 +14,11 @@ b) klasę `System.IO.DirectoryInfo` o podanie liczby elementów w katalogu (1 pk
 
 ### Zadanie 3
 Przy wyświetlaniu drzewa plików uwzględnić uporządkowanie zgodnie z parametrem wywołania programu.  
-W tym celu załadować elementy katalogu do **wybranej przez prowadzącego** kolekcji sortującej (`List`, **`SortedSet`**, `SortedList`, `SortedDictionary`). Zapewnić sortowanie (w kolejności prostej i odwrotnej) (2 pkt):  
+W tym celu załadować elementy katalogu do **wybranej przez prowadzącego** kolekcji sortującej (**`List`**, `SortedSet`, `SortedList`, `SortedDictionary`). Zapewnić sortowanie (w kolejności prostej i odwrotnej) (2 pkt):  
 a) alfabetyczne,  
 b) wg rozmiaru,  
 c) wg daty ostatniej modyfikacji.  
-Wybrana kolekcja sortująca: `SortedSet`.
+Wybrana kolekcja sortująca: `List`.
 
 ## Argumenty aplikacji (Application arguments)
 ```

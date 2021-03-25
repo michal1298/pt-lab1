@@ -2,7 +2,7 @@
   "profiles": {
     "PTLab1": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\projekty\\visual-studio\\PTLab1 date normal"
+      "commandLineArgs": "C:\\projekty\\visual-studio\\PTLab1 date reverse"
     }
   }
 }
