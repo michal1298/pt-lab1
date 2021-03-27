@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;    // do Directory.GetFiles
 using System.Linq;  // do Count()
-using System.Collections.Generic;   // do SortedSet 
+using System.Collections.Generic;   // do SortedSet
 
 
 // metody rozszerzające (extension methods):
@@ -16,7 +16,7 @@ namespace PTLab1
             string myFileName = file.Name;
             return myFileName;
         }
-        
+
         public static long SizeFile(this FileInfo file)
         {
             long mySizeFile = file.Length;
@@ -76,7 +76,7 @@ namespace PTLab1
             var numberOfDirectories = myDirectory.GetDirectories().Count();
             return numberOfDirectories;
         }
-        
+
         public static int NumberOfFiles(this DirectoryInfo myDirectory)         // liczba plików w podanym katalogu
         {
             var numberOfFiles = myDirectory.GetFiles().Count();
@@ -157,9 +157,29 @@ namespace PTLab1
                 var subdirectoryPath = directory.FullName;      // pełna ścieżka podfolderu
 
                 var subdirectoryPathDirectoryInfo = new DirectoryInfo(subdirectoryPath);    // do informacji o podfolderze
-                
+
                 int countBackslash = subdirectoryPath.Split('\\').Length - 2;   // ilość backslashów w pełnej ścieżce do podfolderu
                 numberOfTabs = countBackslash - countBackslashStartPath;        // ilość tabulatorów, jakie należy wstawić
+
+
+                // wyświetlenie nieposotowanych folderów:
+                for (int i = 0; i < numberOfTabs; i++)
+                {
+                    Console.Write("\t");
+                }
+
+                Console.WriteLine(ExtensionDirectoryInfo.DirectoryName(directory)
+                    + "    |||  catalogs: " + ExtensionDirectoryInfo.NumberOfDirectories(directory)
+                    + "  files: " + ExtensionDirectoryInfo.NumberOfFiles(directory)
+                    + " | date: " + ExtensionDirectoryInfo.DirectoryDate(directory)
+                    + " | attributes: " + ExtensionDirectoryInfo.PropertiesDirectoryRead(directory)
+                    + ExtensionDirectoryInfo.PropertiesDirectoryHidden(directory)
+                    + ExtensionDirectoryInfo.PropertiesDirectoryArchive(directory)
+                    + ExtensionDirectoryInfo.PropertiesDirectorySystem(directory));
+                
+
+
+
 
 
                 Files(subdirectoryPathDirectoryInfo, subdirectoryPath, countBackslashStartPath, typeOfSort, orderOfSort, numberOfTabs);
@@ -169,7 +189,7 @@ namespace PTLab1
 
             // wywołanie sortowania folderów:
             List<DirectoryInfo> sort = SortDirectories(myDirectories, typeOfSort, orderOfSort);
-            
+            /*
             // wyświetlenie posotowanych folderów:
             foreach (var sortedDictonary in sort)
             {
@@ -187,6 +207,7 @@ namespace PTLab1
                     + ExtensionDirectoryInfo.PropertiesDirectoryArchive(sortedDictonary)
                     + ExtensionDirectoryInfo.PropertiesDirectorySystem(sortedDictonary));
             }
+            */
         }
 
         static void Files(DirectoryInfo path, string pathString, int countBackslashStartPath, string typeOfSort, string orderOfSort, int numberOfTabs)
@@ -201,10 +222,10 @@ namespace PTLab1
             numberOfTabs = countBackslash - countBackslashStartPath;        // ilość tabulatorów, jakie należy wstawić
 
             List<FileInfo> myFiles = path.GetFiles().ToList();              // stworzenie listy z plikami, jakie znajdują się w podfolderze
-            
+
             // wywołanie sortowania plików:
             List<FileInfo> sort = SortFiles(myFiles, typeOfSort, orderOfSort);  // posortowanie plików w danym podfolderze
-            
+
             // wyświetlenie posortowanych plików:
             foreach(var sortedFile in sort)
             {
@@ -222,7 +243,7 @@ namespace PTLab1
                     + ExtensionFileSystemInfo.PropertiesFileSystem(sortedFile));
             }
         }
-        
+
 
 
         static private List<FileInfo> SortFiles(List<FileInfo> myFiles, string typeOfSort, string orderOfSort)
@@ -366,11 +387,11 @@ namespace PTLab1
                     {
                         Console.Write("\t");
                     }
-                   
+
                     var myDirectoryInfo = new DirectoryInfo(subdirectory);
 
-                    Console.WriteLine(ExtensionDirectoryInfo.DirectoryName(myDirectoryInfo) 
-                        + "    |||  catalogs: " + ExtensionDirectoryInfo.NumberOfDirectories(myDirectoryInfo) 
+                    Console.WriteLine(ExtensionDirectoryInfo.DirectoryName(myDirectoryInfo)
+                        + "    |||  catalogs: " + ExtensionDirectoryInfo.NumberOfDirectories(myDirectoryInfo)
                         + "  files: " + ExtensionDirectoryInfo.NumberOfFiles(myDirectoryInfo)
                         + " | date: " + ExtensionDirectoryInfo.DirectoryDate(myDirectoryInfo)
                         + " | attributes: " + ExtensionDirectoryInfo.PropertiesDirectoryRead(myDirectoryInfo)
@@ -421,7 +442,7 @@ for (int i = 0; i < numberOfTabs; i++)
 }
 
 var myFileInfo = new FileInfo(fileName);
-Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo) 
+Console.WriteLine(ExtensionFileSystemInfo.FileName(myFileInfo)
     + "    |||  size: " + ExtensionFileSystemInfo.SizeFile(myFileInfo)
     + " | date: " + ExtensionFileSystemInfo.FileDate(myFileInfo)
     + " | attributes: " + ExtensionFileSystemInfo.PropertiesFileRead(myFileInfo)
@@ -530,7 +551,7 @@ static void Files(string path, int countBackslashStartPath, string typeOfSort, s
         else
             Console.WriteLine("Invalid argument '{0}'", typeOfSort);
     }
-    
+
 }
 */
 
